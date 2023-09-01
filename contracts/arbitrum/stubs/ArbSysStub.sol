@@ -10,11 +10,7 @@ contract ArbSysStub {
         l2ToL1TxId = l2ToL1TxId_;
     }
 
-    function sendTxToL1(address recipient, bytes calldata data)
-        external
-        payable
-        returns (uint256)
-    {
+    function sendTxToL1(address recipient, bytes calldata data) external payable returns (uint256) {
         l2ToL1TxId += 1;
         emit CreateL2ToL1Tx(recipient, data);
         return l2ToL1TxId;

@@ -18,8 +18,7 @@ contract ERC20Metadata is IERC20Metadata {
     }
 
     /// @dev Location of the slot with DynamicMetdata
-    bytes32 private constant DYNAMIC_METADATA_SLOT =
-        keccak256("ERC20Metdata.dynamicMetadata");
+    bytes32 private constant DYNAMIC_METADATA_SLOT = keccak256("ERC20Metdata.dynamicMetadata");
 
     /// @inheritdoc IERC20Metadata
     uint8 public immutable decimals;
@@ -27,11 +26,7 @@ contract ERC20Metadata is IERC20Metadata {
     /// @param name_ Name of the token
     /// @param symbol_ Symbol of the token
     /// @param decimals_ Decimals places of the token
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        uint8 decimals_
-    ) {
+    constructor(string memory name_, string memory symbol_, uint8 decimals_) {
         decimals = decimals_;
         _setERC20MetadataName(name_);
         _setERC20MetadataSymbol(symbol_);
@@ -64,11 +59,7 @@ contract ERC20Metadata is IERC20Metadata {
     }
 
     /// @dev Returns the reference to the slot with DynamicMetadta struct
-    function _loadDynamicMetadata()
-        private
-        pure
-        returns (DynamicMetadata storage r)
-    {
+    function _loadDynamicMetadata() private pure returns (DynamicMetadata storage r) {
         bytes32 slot = DYNAMIC_METADATA_SLOT;
         assembly {
             r.slot := slot

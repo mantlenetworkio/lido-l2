@@ -10,8 +10,5 @@ interface IArbSys {
     /// @param destination_ Recipient address on L1
     /// @param calldataForL1_ (optional) Calldata for L1 contract call
     /// @return Unique identifier for this L2-to-L1 transaction
-    function sendTxToL1(address destination_, bytes calldata calldataForL1_)
-        external
-        payable
-        returns (uint256);
+    function sendTxToL1(address destination_, bytes calldata calldataForL1_) external payable returns (uint256);
 }

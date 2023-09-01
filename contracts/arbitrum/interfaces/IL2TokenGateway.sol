@@ -22,12 +22,7 @@ interface IL2TokenGateway is IInterchainTokenGateway {
         bytes calldata data_
     ) external returns (bytes memory);
 
-    event DepositFinalized(
-        address indexed l1Token,
-        address indexed from,
-        address indexed to,
-        uint256 amount
-    );
+    event DepositFinalized(address indexed l1Token, address indexed from, address indexed to, uint256 amount);
 
     event WithdrawalInitiated(
         address l1Token,

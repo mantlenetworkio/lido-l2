@@ -18,12 +18,7 @@ import {CrossDomainEnabled} from "./CrossDomainEnabled.sol";
 /// @notice The L1 ERC20 token bridge locks bridged tokens on the L1 side, sends deposit messages
 ///     on the L2 side, and finalizes token withdrawals from L2. Additionally, adds the methods for
 ///     bridging management: enabling and disabling withdrawals/deposits
-contract L1ERC20TokenBridge is
-    IL1ERC20Bridge,
-    BridgingManager,
-    BridgeableTokens,
-    CrossDomainEnabled
-{
+contract L1ERC20TokenBridge is IL1ERC20Bridge, BridgingManager, BridgeableTokens, CrossDomainEnabled {
     using SafeERC20 for IERC20;
 
     /// @inheritdoc IL1ERC20Bridge
@@ -33,23 +28,15 @@ contract L1ERC20TokenBridge is
     /// @param l2TokenBridge_ Address of the corresponding L2 bridge
     /// @param l1Token_ Address of the bridged token in the L1 chain
     /// @param l2Token_ Address of the token minted on the L2 chain when token bridged
-    constructor(
-        address messenger_,
-        address l2TokenBridge_,
-        address l1Token_,
-        address l2Token_
-    ) CrossDomainEnabled(messenger_) BridgeableTokens(l1Token_, l2Token_) {
+    constructor(address messenger_, address l2TokenBridge_, address l1Token_, address l2Token_)
+        CrossDomainEnabled(messenger_)
+        BridgeableTokens(l1Token_, l2Token_)
+    {
         l2TokenBridge = l2TokenBridge_;
     }
 
     /// @inheritdoc IL1ERC20Bridge
-    function depositERC20(
-        address l1Token_,
-        address l2Token_,
-        uint256 amount_,
-        uint32 l2Gas_,
-        bytes calldata data_
-    )
+    function depositERC20(address l1Token_, address l2Token_, uint256 amount_, uint32 l2Gas_, bytes calldata data_)
         external
         whenDepositsEnabled
         onlySupportedL1Token(l1Token_)
@@ -96,14 +83,7 @@ contract L1ERC20TokenBridge is
     {
         IERC20(l1Token_).safeTransfer(to_, amount_);
 
-        emit ERC20WithdrawalFinalized(
-            l1Token_,
-            l2Token_,
-            from_,
-            to_,
-            amount_,
-            data_
-        );
+        emit ERC20WithdrawalFinalized(l1Token_, l2Token_, from_, to_, amount_, data_);
     }
 
     /// @dev Performs the logic for deposits by informing the L2 token bridge contract
@@ -115,35 +95,18 @@ contract L1ERC20TokenBridge is
     /// @param data_ Optional data to forward to L2. This data is provided
     ///        solely as a convenience for external contracts. Aside from enforcing a maximum
     ///        length, these contracts provide no guarantees about its content.
-    function _initiateERC20Deposit(
-        address from_,
-        address to_,
-        uint256 amount_,
-        uint32 l2Gas_,
-        bytes calldata data_
-    ) internal {
+    function _initiateERC20Deposit(address from_, address to_, uint256 amount_, uint32 l2Gas_, bytes calldata data_)
+        internal
+    {
         IERC20(l1Token).safeTransferFrom(from_, address(this), amount_);
 
         bytes memory message = abi.encodeWithSelector(
-            IL2ERC20Bridge.finalizeDeposit.selector,
-            l1Token,
-            l2Token,
-            from_,
-            to_,
-            amount_,
-            data_
+            IL2ERC20Bridge.finalizeDeposit.selector, l1Token, l2Token, from_, to_, amount_, data_
         );
 
         sendCrossDomainMessage(l2TokenBridge, l2Gas_, message);
 
-        emit ERC20DepositInitiated(
-            l1Token,
-            l2Token,
-            from_,
-            to_,
-            amount_,
-            data_
-        );
+        emit ERC20DepositInitiated(l1Token, l2Token, from_, to_, amount_, data_);
     }
 
     error ErrorSenderNotEOA();

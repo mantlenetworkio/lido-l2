@@ -10,11 +10,7 @@ library L2OutboundDataParser {
     /// @param router_ Address of the Arbitrum’s L2GatewayRouter
     /// @param data_ Data encoded for the outboundTransfer() method
     /// @return from_ address of the sender
-    function decode(address router_, bytes memory data_)
-        internal
-        view
-        returns (address from_)
-    {
+    function decode(address router_, bytes memory data_) internal view returns (address from_) {
         bytes memory extraData;
         if (msg.sender == router_) {
             (from_, extraData) = abi.decode(data_, (address, bytes));

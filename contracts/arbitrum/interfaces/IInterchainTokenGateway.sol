@@ -24,10 +24,7 @@ interface IInterchainTokenGateway {
     ///     on l1Token_ bridging
     /// @param l1Token_ Address of the token on the Ethereum chain
     /// @return Address of the token minted on the L2 on bridging
-    function calculateL2TokenAddress(address l1Token_)
-        external
-        view
-        returns (address);
+    function calculateL2TokenAddress(address l1Token_) external view returns (address);
 
     /// @notice Returns address of the counterpart gateway used in the bridging process
     function counterpartGateway() external view returns (address);
@@ -40,11 +37,8 @@ interface IInterchainTokenGateway {
     /// @param amount_  Amount of tokens to bridge
     /// @param data_  Custom data to pass into finalizeInboundTransfer method
     /// @return Encoded transaction data of finalizeInboundTransfer call
-    function getOutboundCalldata(
-        address l1Token_,
-        address from_,
-        address to_,
-        uint256 amount_,
-        bytes memory data_
-    ) external view returns (bytes memory);
+    function getOutboundCalldata(address l1Token_, address from_, address to_, uint256 amount_, bytes memory data_)
+        external
+        view
+        returns (bytes memory);
 }

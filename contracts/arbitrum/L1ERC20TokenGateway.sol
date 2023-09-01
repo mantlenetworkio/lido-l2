@@ -15,11 +15,7 @@ import {InterchainERC20TokenGateway} from "./InterchainERC20TokenGateway.sol";
 /// @author psirex
 /// @notice Contract implements ITokenGateway interface and with counterpart L2ERC20TokenGatewy
 ///     allows bridging registered ERC20 compatible tokens between Ethereum and Arbitrum chains
-contract L1ERC20TokenGateway is
-    InterchainERC20TokenGateway,
-    L1CrossDomainEnabled,
-    IL1TokenGateway
-{
+contract L1ERC20TokenGateway is InterchainERC20TokenGateway, L1CrossDomainEnabled, IL1TokenGateway {
     using SafeERC20 for IERC20;
 
     /// @param inbox_ Address of the Arbitrum’s Inbox contract in the L1 chain
@@ -27,19 +23,8 @@ contract L1ERC20TokenGateway is
     /// @param counterpartGateway_ Address of the counterpart L2 gateway
     /// @param l1Token_ Address of the bridged token in the L1 chain
     /// @param l2Token_ Address of the token minted on the Arbitrum chain when token bridged
-    constructor(
-        address inbox_,
-        address router_,
-        address counterpartGateway_,
-        address l1Token_,
-        address l2Token_
-    )
-        InterchainERC20TokenGateway(
-            router_,
-            counterpartGateway_,
-            l1Token_,
-            l2Token_
-        )
+    constructor(address inbox_, address router_, address counterpartGateway_, address l1Token_, address l2Token_)
+        InterchainERC20TokenGateway(router_, counterpartGateway_, l1Token_, l2Token_)
         L1CrossDomainEnabled(inbox_)
     {}
 
@@ -59,10 +44,7 @@ contract L1ERC20TokenGateway is
         onlySupportedL1Token(l1Token_)
         returns (bytes memory)
     {
-        (address from, uint256 maxSubmissionCost) = L1OutboundDataParser.decode(
-            router,
-            data_
-        );
+        (address from, uint256 maxSubmissionCost) = L1OutboundDataParser.decode(router, data_);
 
         IERC20(l1Token_).safeTransferFrom(from, address(this), amount_);
 
@@ -90,12 +72,7 @@ contract L1ERC20TokenGateway is
         address to_,
         uint256 amount_,
         bytes calldata // data_
-    )
-        external
-        whenWithdrawalsEnabled
-        onlySupportedL1Token(l1Token_)
-        onlyFromCrossDomainAccount(counterpartGateway)
-    {
+    ) external whenWithdrawalsEnabled onlySupportedL1Token(l1Token_) onlyFromCrossDomainAccount(counterpartGateway) {
         IERC20(l1Token_).safeTransfer(to_, amount_);
 
         // The current implementation doesn't support fast withdrawals, so we
@@ -109,12 +86,8 @@ contract L1ERC20TokenGateway is
         uint256 amount_,
         CrossDomainMessageOptions memory messageOptions
     ) private returns (uint256) {
-        return
-            sendCrossDomainMessage(
-                from_,
-                counterpartGateway,
-                getOutboundCalldata(l1Token, from_, to_, amount_, ""),
-                messageOptions
-            );
+        return sendCrossDomainMessage(
+            from_, counterpartGateway, getOutboundCalldata(l1Token, from_, to_, amount_, ""), messageOptions
+        );
     }
 }

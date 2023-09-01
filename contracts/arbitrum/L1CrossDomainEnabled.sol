@@ -48,9 +48,8 @@ contract L1CrossDomainEnabled {
             revert ErrorNoMaxSubmissionCost();
         }
 
-        uint256 minEthValue = msgOptions_.callValue +
-            msgOptions_.maxSubmissionCost +
-            (msgOptions_.maxGas * msgOptions_.gasPriceBid);
+        uint256 minEthValue =
+            msgOptions_.callValue + msgOptions_.maxSubmissionCost + (msgOptions_.maxGas * msgOptions_.gasPriceBid);
 
         if (msg.value < minEthValue) {
             revert ErrorETHValueTooLow();
@@ -80,8 +79,7 @@ contract L1CrossDomainEnabled {
             revert ErrorUnauthorizedBridge();
         }
 
-        address l2ToL1Sender = IOutbox(IBridge(bridge).activeOutbox())
-            .l2ToL1Sender();
+        address l2ToL1Sender = IOutbox(IBridge(bridge).activeOutbox()).l2ToL1Sender();
 
         // and the outbox reports that the L2 address of the sender is the counterpart gateway
         if (l2ToL1Sender != crossDomainAccount_) {
@@ -90,12 +88,7 @@ contract L1CrossDomainEnabled {
         _;
     }
 
-    event TxToL2(
-        address indexed from,
-        address indexed to,
-        uint256 indexed seqNum,
-        bytes data
-    );
+    event TxToL2(address indexed from, address indexed to, uint256 indexed seqNum, bytes data);
 
     error ErrorETHValueTooLow();
     error ErrorUnauthorizedBridge();
